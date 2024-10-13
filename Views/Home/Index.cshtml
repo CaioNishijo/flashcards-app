@@ -1,0 +1,53 @@
+﻿@model List<Flashcard.Models.BaralhoModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if(@Model == null || !@Model.Any())
+{  
+    <div class="text-center">
+        <h1 class="display-4">Parece que não há nenhum baralho cadastrado</h1>
+        <p class="lead">Clique no botão abaixo para adicionar um novo baralho</p>
+        <a class="btn btn-primary" asp-controller="Baralho" asp-action="Create">Adicionar Baralho</a>
+    </div>
+}
+else
+{   
+    <h1 class="display-4 text-center">Baralhos</h1>
+    <div class="text-end m-3">
+        <a class="btn btn-primary" asp-controller="Baralho" asp-action="Create">Adicionar Baralho</a>
+    </div>
+    <div class="row">
+    @foreach(var baralho in @Model)
+    {
+        <div class="col-md-4 col-sm-6 mt-2">
+            <div class="card position-relative">
+                <div class="card-body">
+                    <h5 class="card-title">@baralho.Nome</h5>
+                    <p>@baralho.ContadorFlashcards Flashcards</p>
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div class="col">
+                            <a class="btn btn-success m-1" href="@Url.Action("Create", "Flashcard", new { id = baralho.Id })">
+                                <i class="fas fa-plus"></i> 
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-warning m-1" href="@Url.Action("Edit", "Baralho", new { id = baralho.Id })">
+                                <i class="fas fa-pen-square"></i> 
+                            </a>
+                        </div>
+                        <div>
+                            <a class="btn btn-danger m-1" href="@Url.Action("Delete", "Baralho", new { id = baralho.Id })">
+                                <i class="fas fa-trash-alt"></i> 
+                            </a>
+                        </div>
+                    </div>
+                    <a class="btn btn-info mt-2" href="@Url.Action("Index", "Flashcard", new { id = baralho.Id })">Ver Flashcards</a>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

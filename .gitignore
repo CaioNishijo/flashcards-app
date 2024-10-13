@@ -1,0 +1,32 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio specific files
+.vs/
+*.user
+*.suo
+
+# NuGet packages
+packages/
+
+# Publish output
+publish/
+
+# Logs
+*.log
+
+# Secrets and sensitive data
+appsettings.Development.json
+appsettings.Production.json
+appsettings.json
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+
+# System files
+Thumbs.db
+ehthumbs.db
+Icon?
+.DS_Store

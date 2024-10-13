@@ -1,0 +1,13 @@
+@model Flashcard.Models.FlashcardModel
+@{
+    ViewData["Title"] = "Deletar flashcard";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Você realmente deseja deletar o baralho "@Model.Pergunta"?</h3>
+
+<form asp-action="Delete" method="post">
+    <button type="submit" class="btn btn-danger">Deletar</button>
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Cancelar</a>
+</form>
