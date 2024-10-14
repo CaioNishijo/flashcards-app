@@ -20,15 +20,15 @@ else
     <a class="btn btn-secondary mb-4" asp-action="Index" asp-controller="Home">
         <i class="fas fa-arrow-left"></i> Voltar ao Início
     </a>
+    <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.FirstOrDefault().BaralhoId })">
+        Estudar Flashcards
+    </a>
     <div class="row">
         @foreach (var flashcard in Model)
         {
             var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(flashcard.DataCriacao, localTimeZone);
-            <div class="text-end m-3">
-                <a class="btn btn-primary" href="@Url.Action("Create", "Flashcard", new { id = @flashcard.BaralhoId })">Adicionar Flashcard</a>
-            </div>
             <div class="col-md-4 mb-4">
-                <div class="card">
+                <div class="card" style="width: 20rem; height: 220px;">
                     <div class="card-body">
                         <h5 class="card-title">@flashcard.Pergunta</h5>
                         <p class="card-text">@localDateTime</p>

@@ -92,5 +92,50 @@ namespace Flashcard.Controllers
             }
             return View(flashcard);
         }
+
+        public async Task<IActionResult> Study(int baralhoid, int? currentId)
+        {
+            var flashcards = await _context.Flashcards.Include(f => f.Categoria)
+            .Where(flashcard => flashcard.BaralhoId == baralhoid)
+            .ToListAsync();
+
+            if (flashcards.Count == 0)
+            {
+                return NotFound("Nenhum flashcard encontrado para este baralho.");
+            }
+
+            FlashcardModel flashcardAtual;
+            
+            if (currentId.HasValue)
+            {
+                flashcardAtual = flashcards.FirstOrDefault(f => f.Id == currentId);
+            }
+            else
+            {
+                flashcardAtual = flashcards.FirstOrDefault(); // Começa pelo primeiro flashcard se currentId não for fornecido
+            }
+
+            int currentIndex = flashcards.IndexOf(flashcardAtual);
+            int nextIndex = (currentIndex + 1) % flashcards.Count;
+
+            bool isLastFlashcard = currentIndex == flashcards.Count - 1;
+            if(isLastFlashcard)
+            {
+                ViewBag.isLastFlashcard = isLastFlashcard;
+            }
+            else
+            {
+                ViewBag.isLastFlashcard = false;
+            }
+
+            ViewBag.NextFlashcardId = flashcards[nextIndex].Id;
+            ViewBag.BaralhoId = baralhoid; 
+
+            return View(flashcardAtual);
+        }
+        public IActionResult StudyResults()
+        {
+            return View();
+        }
     }
 }

@@ -1,0 +1,51 @@
+@model Flashcard.Models.FlashcardModel
+@{
+    ViewData["title"] = "Estudar Flashcards";
+    TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
+    var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(Model.DataCriacao, localTimeZone);
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Pergunta</h5>
+            <p class="card-text">@localDateTime</p>
+            <p class="card-text">@Model.Categoria.Nome</p>
+            <button class="btn btn-primary" onclick="toggleResposta('resposta')">Mostrar Resposta</button>
+            <p class="card-text mt-2" id="resposta" style="display: none;">@Model.Resposta</p>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        @if(ViewBag.isLastFlashcard == true)
+        {
+            <a class="btn btn-success" href="@Url.Action("StudyResults", "Flashcard")">
+                <i class="fas fa-arrow-left"></i> Acertei
+            </a>
+            <a class="btn btn-danger" href="@Url.Action("StudyResults", "Flashcard")">
+                Errei <i class="fas fa-arrow-right"></i>
+            </a>
+        }
+        else
+        {
+            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId })">
+                <i class="fas fa-arrow-left"></i> Acertei
+            </a>
+            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId })">
+                Errei <i class="fas fa-arrow-right"></i>
+            </a>
+        }
+        
+    </div>
+</div>
+
+<script>
+    function toggleResposta(id) {
+        var resposta = document.getElementById(id);
+        if (resposta.style.display === "none") {
+            resposta.style.display = "block";
+        } else {
+            resposta.style.display = "none";
+        }
+    }
+</script>

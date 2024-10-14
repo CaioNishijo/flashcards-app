@@ -1,0 +1,13 @@
+@model Flashcard.Models.FlashcardModel
+@{
+    ViewData["Title"] = "Resultados";
+}
+<h1>@ViewData["Title"]</h1>
+<div class="container mt-4">
+    <a class="btn btn-secondary mb-4" asp-action="Index" asp-controller="Home">
+        Voltar ao Início
+    </a>
+    <div class="alert alert-success" role="alert">
+        Parabéns! Você concluiu o estudo dos flashcards.
+    </div>
+</div>
