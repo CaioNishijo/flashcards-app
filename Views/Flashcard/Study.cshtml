@@ -2,14 +2,14 @@
 @{
     ViewData["title"] = "Estudar Flashcards";
     TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
-    var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(Model.DataCriacao, localTimeZone);
+    @*var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(Model.DataCriacao, localTimeZone);*@
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">@Model.Pergunta</h5>
-            <p class="card-text">@localDateTime</p>
+            @*<p class="card-text">@localDateTime</p>*@
             <p class="card-text">@Model.Categoria.Nome</p>
             <button class="btn btn-primary" onclick="toggleResposta('resposta')">Mostrar Resposta</button>
             <p class="card-text mt-2" id="resposta" style="display: none;">@Model.Resposta</p>

@@ -26,12 +26,12 @@ else
     <div class="row">
         @foreach (var flashcard in Model)
         {
-            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(flashcard.DataCriacao, localTimeZone);
+            @*var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(flashcard.DataCriacao, localTimeZone);*@
             <div class="col-md-4 mb-4">
                 <div class="card" style="width: 20rem; height: 220px;">
                     <div class="card-body">
                         <h5 class="card-title">@flashcard.Pergunta</h5>
-                        <p class="card-text">@localDateTime</p>
+                        @*<p class="card-text">@localDateTime</p>*@
                         <p class="card-text">@flashcard.Categoria.Nome</p>
                         <div class="position-absolute top-0 end-0 m-2">
                         <div class="col">

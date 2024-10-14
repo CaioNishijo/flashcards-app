@@ -39,7 +39,7 @@ namespace Flashcard.Controllers
         {
                  if (ModelState.IsValid)
                 {
-                    flashcard.DataCriacao = DateTime.UtcNow;
+                    //flashcard.DataCriacao = DateTime.UtcNow;
                     _context.Flashcards.Add(flashcard);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index", "Home");
@@ -64,7 +64,7 @@ namespace Flashcard.Controllers
             if(ModelState.IsValid)
             {
                 flashcard.BaralhoId = flashcard.BaralhoId;
-                flashcard.DataCriacao = flashcard.DataCriacao.ToUniversalTime();
+                //flashcard.DataCriacao = flashcard.DataCriacao.ToUniversalTime();
                 _context.Flashcards.Update(flashcard);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Flashcard", new { id = flashcard.BaralhoId });
@@ -112,7 +112,7 @@ namespace Flashcard.Controllers
             }
             else
             {
-                flashcardAtual = flashcards.FirstOrDefault(); // Começa pelo primeiro flashcard se currentId não for fornecido
+                flashcardAtual = flashcards.FirstOrDefault();
             }
 
             int currentIndex = flashcards.IndexOf(flashcardAtual);
