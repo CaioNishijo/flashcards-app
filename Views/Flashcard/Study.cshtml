@@ -19,19 +19,19 @@
     <div class="d-flex justify-content-between mt-4">
         @if(ViewBag.isLastFlashcard == true)
         {
-            <a class="btn btn-success" href="@Url.Action("StudyResults", "Flashcard")">
+            <a class="btn btn-success" href="@Url.Action("StudyResults", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = true })">
                 <i class="fas fa-arrow-left"></i> Acertei
             </a>
-            <a class="btn btn-danger" href="@Url.Action("StudyResults", "Flashcard")">
+            <a class="btn btn-danger" href="@Url.Action("StudyResults", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = false })">
                 Errei <i class="fas fa-arrow-right"></i>
             </a>
         }
         else
         {
-            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo })">
+            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = true })">
                 <i class="fas fa-arrow-left"></i> Acertei
             </a>
-            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo  })">
+            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = false  })">
                 Errei <i class="fas fa-arrow-right"></i>
             </a>
         }
