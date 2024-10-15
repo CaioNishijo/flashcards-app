@@ -1,9 +1,13 @@
-@model IEnumerable<Flashcard.Models.FlashcardModel>
+@model Flashcard.Models.FlashcardsFiltradoDataRevisao
 @{
     ViewData["title"] = "Flashcards";
-    TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
 }
-@if(@Model == null || !@Model.Any())
+@if((Model.Hoje == null || !Model.Hoje.Any()) &&
+    (Model.UmDia == null || !Model.UmDia.Any()) &&
+    (Model.TresDias == null || !Model.TresDias.Any()) &&
+    (Model.SeteDias == null || !Model.SeteDias.Any()) &&
+    (Model.TrintaDias == null || !Model.TrintaDias.Any())
+    )
 {
     <div class="container mt-4">
         <a class="btn btn-secondary mb-4" asp-action="Index" asp-controller="Home">
@@ -20,41 +24,172 @@ else
     <a class="btn btn-secondary mb-4" asp-action="Index" asp-controller="Home">
         <i class="fas fa-arrow-left"></i> Voltar ao Início
     </a>
-    <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.FirstOrDefault().BaralhoId })">
-        Estudar Flashcards
-    </a>
+    @if(Model.Hoje != null && Model.Hoje.Any())
+    {
     <div class="row">
-        @foreach (var flashcard in Model)
+        <div class="col">
+            <h1>Revisão hoje</h1>
+        </div>
+        <div class="col text-end">
+            <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.Hoje.FirstOrDefault().BaralhoId, intervalo = 0 })">
+            Revisar Flashcards
+            </a>
+        </div>
+    </div>    
+    <div class="row">
+        @foreach (var carta in Model.Hoje)
         {
-            @*var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(flashcard.DataCriacao, localTimeZone);*@
-            <div class="col-md-4 mb-4">
-                <div class="card" style="width: 20rem; height: 220px;">
+            <div class="col-md-4">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">@flashcard.Pergunta</h5>
-                        @*<p class="card-text">@localDateTime</p>*@
-                        <p class="card-text">@flashcard.Categoria.Nome</p>
-                        <div class="position-absolute top-0 end-0 m-2">
-                        <div class="col">
-                            <a class="btn btn-warning m-1" href="@Url.Action("Edit", "Flashcard", new { id = flashcard.Id })">
-                                <i class="fas fa-pen-square"></i> 
-                            </a>
+                        <h5 class="card-title">@carta.Pergunta</h5>
+                        <p class="card-text">@carta.Categoria.Nome</p>
+                        <button class="btn btn-primary" onclick="toggleResposta('@carta.Id')">Mostrar Resposta</button>
+                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@carta.Id">Editar</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@carta.Id">Excluir</a>
+                        <div id="@carta.Id" style="display:none;">
+                            <p>@carta.Resposta</p>
                         </div>
-                        <div>
-                            <a class="btn btn-danger m-1" href="@Url.Action("Delete", "Flashcard", new { id = flashcard.Id })">
-                                <i class="fas fa-trash-alt"></i> 
-                            </a>
-                        </div>
-                        </div>
-                        <button class="btn btn-primary" onclick="toggleResposta('resposta-@flashcard.Id')">Mostrar Resposta</button>
-                        <p class="card-text mt-2" id="resposta-@flashcard.Id" style="display: none;">@flashcard.Resposta</p>
                     </div>
                 </div>
             </div>
         }
     </div>
+    }
+    @if(Model.UmDia != null && Model.UmDia.Any())
+    {
+    <div class="row">
+        <div class="col">
+            <h1>Revisão em um dia</h1>
+        </div>
+        <div class="col text-end">
+            <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.UmDia.FirstOrDefault().BaralhoId, intervalo = 1 })">
+            Revisar Flashcards
+            </a>
+        </div>
+    </div>    
+    <div class="row">
+        @foreach (var carta in Model.UmDia)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@carta.Pergunta</h5>
+                        <p class="card-text">@carta.Categoria.Nome</p>
+                        <button class="btn btn-primary" onclick="toggleResposta('@carta.Id')">Mostrar Resposta</button>
+                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@carta.Id">Editar</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@carta.Id">Excluir</a>
+                        <div id="@carta.Id" style="display:none;">
+                            <p>@carta.Resposta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    }
+    @if(Model.TresDias != null && Model.TresDias.Any())
+    {
+    <div class="row">
+        <div class="col">
+            <h1>Revisão em 3 dias</h1>
+        </div>
+        <div class="col text-end">
+            <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.TresDias.FirstOrDefault().BaralhoId, intervalo = 2 })">
+            Revisar Flashcards
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        
+        @foreach (var carta in Model.TresDias)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@carta.Pergunta</h5>
+                        <p class="card-text">@carta.Categoria.Nome</p>
+                        <button class="btn btn-primary" onclick="toggleResposta('@carta.Id')">Mostrar Resposta</button>
+                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@carta.Id">Editar</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@carta.Id">Excluir</a>
+                        <div id="@carta.Id" style="display:none;">
+                            <p>@carta.Resposta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    }
+
+    @if(Model.SeteDias != null && Model.SeteDias.Any())
+    {
+    <div class="row">
+        <div class="col">
+                <h1>Revisão em 7 dias</h1>
+            </div>
+            <div class="col text-end">
+                <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.SeteDias.FirstOrDefault().BaralhoId, intervalo = 3 })">
+                Revisar Flashcards
+                </a>
+            </div>
+        </div>
+    <div class="row">
+        
+        @foreach (var carta in Model.SeteDias)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@carta.Pergunta</h5>
+                        <p class="card-text">@carta.Categoria.Nome</p>
+                        <button class="btn btn-primary" onclick="toggleResposta('@carta.Id')">Mostrar Resposta</button>
+                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@carta.Id">Editar</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@carta.Id">Excluir</a>
+                        <div id="@carta.Id" style="display:none;">
+                            <p>@carta.Resposta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    }
+    @if(Model.TrintaDias != null && Model.TrintaDias.Any())
+    {
+    <div class="row">
+        <div class="col">
+            <h1>Revisão em 30 dias</h1>
+        </div>
+        <div class="col text-end">
+            <a class="btn btn-success mb-4 text-end" href="@Url.Action("Study", "Flashcard", new { baralhoid = @Model.TrintaDias.FirstOrDefault().BaralhoId, intervalo = 4 })">
+            Revisar Flashcards
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        
+        @foreach (var carta in Model.TrintaDias)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@carta.Pergunta</h5>
+                        <p class="card-text">@carta.Categoria.Nome</p>
+                        <button class="btn btn-primary" onclick="toggleResposta('@carta.Id')">Mostrar Resposta</button>
+                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@carta.Id">Editar</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@carta.Id">Excluir</a>
+                        <div id="@carta.Id" style="display:none;">
+                            <p>@carta.Resposta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    }
 </div>
 }
-
 
 <script>
     function toggleResposta(id) {
@@ -68,4 +203,4 @@ else
 </script>
 
 <!-- Add Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"></script>

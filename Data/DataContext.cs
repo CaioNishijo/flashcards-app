@@ -10,5 +10,6 @@ namespace Flashcard.Data
         public DbSet<BaralhoModel> Baralhos { get;set; }
         public DbSet<CategoriaModel> Categorias { get;set; }
         public DbSet<FlashcardModel> Flashcards { get;set; }
+        public DbSet<RevisaoModel> Revisoes { get;set; }
     }
 }

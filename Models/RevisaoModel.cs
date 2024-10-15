@@ -6,6 +6,7 @@ namespace Flashcard.Models
         public DateTime proximaRevisao { get;set; }
         public int revisoesRealizadas { get;set; }
         public DateTime DataCriacao { get;set; }
+        public DateTime? UltimaRevisao {get;set;}
 
         public int FlashcardId { get;set; }
         public FlashcardModel Flashcard { get;set; }

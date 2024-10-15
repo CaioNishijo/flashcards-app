@@ -19,8 +19,24 @@ namespace Flashcard.Controllers
         }
 
         public async Task<IActionResult> Index(int id){
-            var flashcards = await _context.Flashcards.Include(f => f.Categoria).Where(flashcard => flashcard.BaralhoId == id).ToListAsync();
-            return View(flashcards);
+            var flashcards = await _context.Flashcards
+            .Include(f => f.Categoria)
+            .Include(f => f.Revisao)
+            .Where(flashcard => flashcard.BaralhoId == id)
+            .ToListAsync();
+
+            var hoje = DateTime.UtcNow;
+
+            var view = new FlashcardsFiltradoDataRevisao
+            {
+                Hoje = flashcards.Where(f => f.Revisao.proximaRevisao <= hoje).ToList(),
+                UmDia = flashcards.Where(f => f.Revisao.proximaRevisao > hoje && f.Revisao.proximaRevisao <= hoje.AddDays(1)).ToList(),
+                TresDias = flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(1) && f.Revisao.proximaRevisao < hoje.AddDays(3)).ToList(),
+                SeteDias = flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(3) && f.Revisao.proximaRevisao < hoje.AddDays(7)).ToList(),
+                TrintaDias = flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(7) && f.Revisao.proximaRevisao < hoje.AddDays(30)).ToList()
+            };
+
+            return View(view);
         }
         public IActionResult Create(int id)
         {
@@ -39,7 +55,17 @@ namespace Flashcard.Controllers
         {
                  if (ModelState.IsValid)
                 {
-                    //flashcard.DataCriacao = DateTime.UtcNow;
+                    var revisao = new RevisaoModel();
+                    var data_atual = DateTime.Now;
+                    revisao.DataCriacao = data_atual.ToUniversalTime();
+                    revisao.proximaRevisao = data_atual.AddHours(24).ToUniversalTime();
+                    revisao.revisoesRealizadas = 0;
+                    
+                    _context.Revisoes.Add(revisao);
+                    await _context.SaveChangesAsync();
+
+                    flashcard.RevisaoId = revisao.Id;
+
                     _context.Flashcards.Add(flashcard);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Index", "Home");
@@ -64,7 +90,6 @@ namespace Flashcard.Controllers
             if(ModelState.IsValid)
             {
                 flashcard.BaralhoId = flashcard.BaralhoId;
-                //flashcard.DataCriacao = flashcard.DataCriacao.ToUniversalTime();
                 _context.Flashcards.Update(flashcard);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Flashcard", new { id = flashcard.BaralhoId });
@@ -93,11 +118,34 @@ namespace Flashcard.Controllers
             return View(flashcard);
         }
 
-        public async Task<IActionResult> Study(int baralhoid, int? currentId)
+        public async Task<IActionResult> Study(int baralhoid, int? currentId, int intervalo)
         {
-            var flashcards = await _context.Flashcards.Include(f => f.Categoria)
+            var flashcards = await _context.Flashcards.Include(f => f.Revisao).Include(f => f.Categoria)
             .Where(flashcard => flashcard.BaralhoId == baralhoid)
             .ToListAsync();
+
+            var hoje = DateTime.UtcNow;
+
+            if(intervalo == 0)
+            {
+                flashcards = flashcards.Where(f => f.Revisao.proximaRevisao <= hoje).ToList();
+            }
+            else if(intervalo == 1)
+            {
+                flashcards = flashcards.Where(f => f.Revisao.proximaRevisao > hoje && f.Revisao.proximaRevisao < hoje.AddDays(1)).ToList();
+            }
+            else if(intervalo == 2)
+            {
+                flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(1) && f.Revisao.proximaRevisao < hoje.AddDays(3)).ToList();
+            }
+            else if(intervalo == 3)
+            {
+                flashcards = flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(3) && f.Revisao.proximaRevisao < hoje.AddDays(7)).ToList();
+            }
+            else if(intervalo == 4)
+            {
+                flashcards = flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(7) && f.Revisao.proximaRevisao < hoje.AddDays(30)).ToList();
+            }
 
             if (flashcards.Count == 0)
             {
@@ -130,6 +178,7 @@ namespace Flashcard.Controllers
 
             ViewBag.NextFlashcardId = flashcards[nextIndex].Id;
             ViewBag.BaralhoId = baralhoid; 
+            ViewBag.Intervalo = intervalo;
 
             return View(flashcardAtual);
         }

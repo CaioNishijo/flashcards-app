@@ -16,7 +16,7 @@
         <input asp-for="Resposta" class="form-control"/>
         <span asp-validation-for="Resposta"></span>
     </div>
-    <input hidden asp-for="BaralhoId"/>
+    <input type="hidden" asp-for="BaralhoId"/>
     <div class="form-group">
         <label asp-for="CategoriaId">Categoria</label>
         <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.Categorias"></select>

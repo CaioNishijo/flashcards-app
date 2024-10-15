@@ -28,10 +28,10 @@
         }
         else
         {
-            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId })">
+            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo })">
                 <i class="fas fa-arrow-left"></i> Acertei
             </a>
-            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId })">
+            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo  })">
                 Errei <i class="fas fa-arrow-right"></i>
             </a>
         }
