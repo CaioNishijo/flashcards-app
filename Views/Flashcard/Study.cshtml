@@ -1,15 +1,12 @@
 @model Flashcard.Models.FlashcardModel
 @{
     ViewData["title"] = "Estudar Flashcards";
-    TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
-    @*var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(Model.DataCriacao, localTimeZone);*@
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">@Model.Pergunta</h5>
-            @*<p class="card-text">@localDateTime</p>*@
             <p class="card-text">@Model.Categoria.Nome</p>
             <button class="btn btn-primary" onclick="toggleResposta('resposta')">Mostrar Resposta</button>
             <p class="card-text mt-2" id="resposta" style="display: none;">@Model.Resposta</p>
@@ -19,19 +16,35 @@
     <div class="d-flex justify-content-between mt-4">
         @if(ViewBag.isLastFlashcard == true)
         {
-            <a class="btn btn-success" href="@Url.Action("StudyResults", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = true })">
-                <i class="fas fa-arrow-left"></i> Acertei
+            <a class="btn btn-success" href="@Url.Action("StudyResults", "Flashcard", new { baralhoid = ViewBag.BaralhoId, 
+            currentId = ViewBag.NextFlashcardId, 
+            intervalo = ViewBag.Intervalo, 
+            acertou = true })">
+                Acertei
             </a>
-            <a class="btn btn-danger" href="@Url.Action("StudyResults", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = false })">
-                Errei <i class="fas fa-arrow-right"></i>
+            <a class="btn btn-danger" href="@Url.Action("StudyResults", "Flashcard", new { baralhoid = ViewBag.BaralhoId, 
+            currentId = ViewBag.NextFlashcardId, 
+            intervalo = ViewBag.Intervalo, 
+            acertou = false })">
+                Errei 
             </a>
         }
         else
         {
-            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = true })">
+            <a class="btn btn-success" href="@Url.Action("Study", "Flashcard", 
+            new { baralhoid = ViewBag.BaralhoId, 
+            currentId = ViewBag.NextFlashcardId, 
+            intervalo = ViewBag.Intervalo, 
+            acertou = true })">
+
                 <i class="fas fa-arrow-left"></i> Acertei
             </a>
-            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", new { baralhoid = ViewBag.BaralhoId, currentId = ViewBag.NextFlashcardId, intervalo = ViewBag.Intervalo, acertou = false  })">
+            <a class="btn btn-danger" href="@Url.Action("Study", "Flashcard", 
+            new { baralhoid = ViewBag.BaralhoId, 
+            currentId = ViewBag.NextFlashcardId, 
+            intervalo = ViewBag.Intervalo, 
+            acertou = false  })">
+
                 Errei <i class="fas fa-arrow-right"></i>
             </a>
         }

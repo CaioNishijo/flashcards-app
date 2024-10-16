@@ -138,7 +138,7 @@ namespace Flashcard.Controllers
             }
             else if(intervalo == 2)
             {
-                flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(1) && f.Revisao.proximaRevisao < hoje.AddDays(3)).ToList();
+                flashcards = flashcards.Where(f => f.Revisao.proximaRevisao > hoje.AddDays(1) && f.Revisao.proximaRevisao < hoje.AddDays(3)).ToList();
             }
             else if(intervalo == 3)
             {
@@ -192,14 +192,12 @@ namespace Flashcard.Controllers
                 flashcards[currentIndex -1].Revisao.revisoesRealizadas++;   
 
                 _context.Flashcards.Update(flashcards[currentIndex - 1]);
-                await _context.SaveChangesAsync();
             }
             else if(acertou.HasValue && acertou == false)
             {
                 flashcards[currentIndex - 1].Revisao.UltimaRevisao = hoje;
                 flashcards[currentIndex - 1].Revisao.proximaRevisao = hoje.AddDays(1);
                 _context.Flashcards.Update(flashcards[currentIndex - 1]);
-                await _context.SaveChangesAsync();
             }
 
             bool ultimo = false;
@@ -217,12 +215,14 @@ namespace Flashcard.Controllers
             ViewBag.BaralhoId = baralhoid; 
             ViewBag.Intervalo = intervalo;
 
-            
+            await _context.SaveChangesAsync();
             return View(flashcardAtual);
         }
         public async Task<IActionResult> StudyResults(int baralhoid, int? currentId, int intervalo, bool? acertou)
         {
-            var flashcards = await _context.Flashcards.Include(f => f.Revisao).Include(f => f.Categoria)
+
+            // Filtra os cards
+           var flashcards = await _context.Flashcards.Include(f => f.Revisao).Include(f => f.Categoria)
             .Where(flashcard => flashcard.BaralhoId == baralhoid)
             .ToListAsync();
 
@@ -269,44 +269,39 @@ namespace Flashcard.Controllers
 
             // Cálculo dos índices
             int currentIndex = flashcards.IndexOf(flashcardAtual);
-            int nextIndex = (currentIndex + 1) % flashcards.Count;
 
             if(acertou.HasValue && acertou == true)
             {
-                flashcards[currentIndex - 1].Revisao.UltimaRevisao = hoje;
-                if( flashcards[currentIndex - 1].Revisao.revisoesRealizadas == 0)
+                flashcards[currentIndex].Revisao.UltimaRevisao = hoje;
+                if( flashcards[currentIndex].Revisao.revisoesRealizadas == 0)
                 {
-                    flashcards[currentIndex - 1].Revisao.proximaRevisao = hoje.AddDays(3);
+                    flashcards[currentIndex].Revisao.proximaRevisao = hoje.AddDays(3);
                 }
-                else if(flashcards[currentIndex - 1].Revisao.revisoesRealizadas == 1)
+                else if(flashcards[currentIndex].Revisao.revisoesRealizadas == 1)
                 {
-                    flashcards[currentIndex - 1].Revisao.proximaRevisao = hoje.AddDays(7);
+                    flashcards[currentIndex].Revisao.proximaRevisao = hoje.AddDays(7);
                 }
-                else if(flashcards[currentIndex - 1].Revisao.revisoesRealizadas == 2)
+                else if(flashcards[currentIndex].Revisao.revisoesRealizadas == 2)
                 {
-                    flashcards[currentIndex - 1].Revisao.proximaRevisao = hoje.AddDays(30);
+                    flashcards[currentIndex].Revisao.proximaRevisao = hoje.AddDays(30);
                 }
                 else
                 {
-                    flashcards[currentIndex - 1].Revisao.proximaRevisao = hoje.AddDays(7);
+                    flashcards[currentIndex].Revisao.proximaRevisao = hoje.AddDays(7);
                 }
-                flashcards[currentIndex -1].Revisao.revisoesRealizadas++;   
+                flashcards[currentIndex].Revisao.revisoesRealizadas++;   
 
-                _context.Flashcards.Update(flashcards[currentIndex - 1]);
-                await _context.SaveChangesAsync();
+                _context.Flashcards.Update(flashcards[currentIndex]);
             }
             else if(acertou.HasValue && acertou == false)
             {
-                flashcards[currentIndex - 1].Revisao.UltimaRevisao = hoje;
-                flashcards[currentIndex - 1].Revisao.proximaRevisao = hoje.AddDays(1);
-                _context.Flashcards.Update(flashcards[currentIndex - 1]);
-                await _context.SaveChangesAsync();
+                flashcards[currentIndex].Revisao.UltimaRevisao = hoje;
+                flashcards[currentIndex].Revisao.proximaRevisao = hoje.AddDays(1);
+                _context.Flashcards.Update(flashcards[currentIndex]);
             }
+            
+            await _context.SaveChangesAsync();
 
-            // Passagem de parâmetros e view
-            ViewBag.NextFlashcardId = flashcards[nextIndex].Id;
-            ViewBag.BaralhoId = baralhoid; 
-            ViewBag.Intervalo = intervalo;
             return View();
         }
     }
